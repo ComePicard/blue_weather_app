@@ -10,13 +10,14 @@
             <v-autocomplete
                 class="mt-2"
                 clearable
+                auto-select-first
                 flat
                 v-model="selectedCity"
                 :search-input.sync="searchCity"
                 cache-items
                 hide-no-data
                 :items="cities.results"
-                :item-value="getCoord"
+                return-object
                 item-text="name">
                 <template v-slot:item="{ item }">
                     <v-list-item-content>
@@ -36,7 +37,13 @@
             <v-spacer/>
             <v-btn
                 outlined
-                color="success">
+                color="success"
+                @click="$emit('add', {
+                    name: selectedCity['name'],
+                    latitude: selectedCity['latitude'], 
+                    longitude: selectedCity['longitude']
+                    }
+                )">
                 Add
             </v-btn>
         </v-card-actions>
@@ -53,21 +60,15 @@ export default {
         return{
             searchCity: "",
             cities: [],
-            selectedCity: {},
-        }
-    },
-
-    methods:{
-        getCoord(item){
-            return [item.latitude, item.longitude];
+            selectedCity: [],
         }
     },
 
     watch :{
         searchCity: {
             async handler(){
-                if(this.searchCity!=="" ||this.searchCity!==null){
-                    this.cities = await getCityByName({name: this.searchCity})
+                if(this.searchCity!=="" || this.searchCity!==null){
+                    this.cities = await getCityByName({name: this.searchCity, number: 10})
                 }
                 else{
                     this.cities = [];

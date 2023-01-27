@@ -5,7 +5,7 @@
         color="blue lighten-2"
         flat>
         <v-row class="d-flex justify-space-between">
-          <v-dialog v-model="dialogManage" persistent max-width="350px">
+          <v-dialog v-model="dialogManage" persistent>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
@@ -20,7 +20,7 @@
               @close="validationDialog"/>
           </v-dialog>
           <v-spacer/>
-          <v-dialog v-model="dialogSearch" persistent max-width="350px">
+          <v-dialog v-model="dialogSearch">
             <template v-slot:activator="{ on, attrs }">
             <v-btn 
                 class="ml-2"
@@ -33,6 +33,7 @@
             </v-btn>
             </template>
             <SearchCity
+              @add="addCity"
               @close="validationDialog"/>
           </v-dialog>          
         </v-row>
@@ -110,8 +111,10 @@
   </template>
   
   <script>
-  import SearchCity from "@/components/SearchCity.vue"
+  import SearchCity from "@/components/SearchCity.vue";
   import ManageCity from "@/components/ManageCity.vue";
+// import { getCityCurrentWeather } from "@/services/service";
+
   
   export default {
     name: "homePage",
@@ -125,6 +128,10 @@
       return {
         dialogSearch: false,
         dialogManage: false,
+
+        cityTest : "",
+
+        store: {},
 
         cities: ["Rennes", "Lannion", "Angers", "Vannes", "Brest"],
         temperature: 7,
@@ -141,8 +148,31 @@
       validationDialog(){
         this.dialogSearch = false;
         this.dialogManage = false;
+      },
+
+      async addCity({
+        name,
+        latitude,
+        longitude
+      }){
+        try {
+          this.cities.push(name);
+          this.store = longitude + latitude;
+          // this.cities.push(await getCityCurrentWeather({
+          //   latitude: latitude,
+          //   longitude: longitude,
+          // }));
+        } catch (e) {
+          console.error(e.message);
+        }
+        finally{
+          this.validationDialog();
+        }
       }
     },
+
+    async created(){
+    }
     
   }
   </script>
