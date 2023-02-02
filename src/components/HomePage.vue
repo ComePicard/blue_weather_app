@@ -49,7 +49,7 @@
                 <v-chip 
                   v-for="city in cities"
                   :key="city.name"
-                  @change="selected_city(city)">
+                  @change="selectedCity(city)">
                   {{city.name}}
                 </v-chip>
               </v-chip-group>
@@ -145,11 +145,33 @@
     },
   
     methods:{
+
+      // TODO : add local storage
+
+
+      /**
+       * This method resets the values of the `dialogSearch` and `dialogManage` flags to false.
+       * 
+       * @returns {void}
+       */
       validationDialog(){
         this.dialogSearch = false;
         this.dialogManage = false;
       },
 
+
+      /**
+     * This method adds a new city to the `cities` list with its name and weather data.
+     * The weather data is obtained by calling `getCityCurrentWeather` with the provided latitude and longitude.
+     * The `validationDialog` method is called at the end to reset the dialog flags.
+     * 
+     * @async
+     * @param {Object} param0 - The object containing the city's name, latitude, and longitude.
+     * @param {string} param0.name - The name of the city.
+     * @param {number} param0.latitude - The latitude of the city.
+     * @param {number} param0.longitude - The longitude of the city.
+     * @returns {Promise<void>} - Returns a promise that resolves when the city has been added to the `cities` list.
+     */
       async addCity({
         name,
         latitude,
@@ -173,11 +195,28 @@
         }
       },
 
-      selected_city(item){
+
+      /**
+       * This method updates the `temperature` property with the temperature of the selected city,
+       * and calls the `getWeather` method with the weather code of the selected city.
+       * 
+       * @param {Object} item - The selected city object.
+       * @returns {void}
+       */
+      selectedCity(item){
         this.temperature = item["weather_data"]["current_weather"]["temperature"];
         this.getWeather({weather_code: item["weather_data"]["current_weather"]["weathercode"]})
       },
 
+
+      /**
+       * This method sets the `weather` and `img` properties based on the weather code.
+       * The weather code determines the weather condition, which can be Sunny, Cloudy, Rainy, Snowy, or Thundery.
+       * 
+       * @param {Object} param0 - The object containing the weather code.
+       * @param {number} param0.weather_code - The weather code of the selected city.
+       * @returns {void}
+       */
       getWeather({weather_code}) {
         switch (weather_code) {
           case 0:
@@ -251,7 +290,7 @@
         longitude: 5.2258,
       });
 
-      this.selected_city(this.cities[0])
+      this.selectedCity(this.cities[0])
     }
     
   }
