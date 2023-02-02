@@ -5,7 +5,7 @@
         color="blue lighten-2"
         flat>
         <v-row class="d-flex justify-space-between">
-          <v-dialog v-model="dialogManage" persistent>
+          <v-dialog v-model="dialogManage">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
