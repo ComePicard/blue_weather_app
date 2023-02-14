@@ -17,8 +17,11 @@
               </v-btn>
             </template>
             <ManageCity
+              cities="cities"
               @close="validationDialog"/>
           </v-dialog>
+          <v-spacer/>
+          <span class="text-h6 text-uppercase align-self-center">Blue Weather</span>
           <v-spacer/>
           <v-dialog v-model="dialogSearch">
             <template v-slot:activator="{ on, attrs }">
@@ -45,7 +48,7 @@
                 show-arrows
                 center-active
                 mandatory
-                active-class="blue darken-3 white--text">
+                active-class="blue darken-3 white--text large">
                 <v-chip 
                   v-for="city in cities"
                   :key="city.name"
@@ -178,6 +181,12 @@
         longitude
       }){
         try {
+          let city = {
+            name: name,
+            latitude: latitude,
+            longitude: longitude,
+          }
+          localStorage.setItem(`${name}`, JSON.stringify(city))
           this.cities.push(
             {
               "name": name,
