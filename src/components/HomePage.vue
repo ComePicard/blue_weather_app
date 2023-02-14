@@ -5,7 +5,9 @@
         color="blue lighten-2"
         flat>
         <v-row class="d-flex justify-space-between">
-          <v-dialog v-model="dialogManage">
+          <v-dialog 
+            transition="dialog-top-transition"
+            v-model="dialogManage">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 v-bind="attrs"
@@ -17,13 +19,15 @@
               </v-btn>
             </template>
             <ManageCity
-              cities="cities"
+              @delete="deleteCites"
               @close="validationDialog"/>
           </v-dialog>
           <v-spacer/>
           <span class="text-h6 text-uppercase align-self-center">Blue Weather</span>
           <v-spacer/>
-          <v-dialog v-model="dialogSearch">
+          <v-dialog 
+            transition="dialog-top-transition"  
+            v-model="dialogSearch">
             <template v-slot:activator="{ on, attrs }">
             <v-btn 
                 class="ml-2"
@@ -43,20 +47,24 @@
       </v-toolbar>
       <v-container>
         <v-row class="d-flex flex-column align-center">
-            <v-col cols="12">
-              <v-chip-group
-                show-arrows
-                center-active
-                mandatory
-                active-class="blue darken-3 white--text large">
-                <v-chip 
-                  v-for="city in cities"
-                  :key="city.name"
-                  @change="selectedCity(city)">
-                  {{city.name}}
-                </v-chip>
-              </v-chip-group>
-            </v-col>
+          <v-col cols="12">
+            <v-row justify="center">
+              <v-col cols="auto">
+                <v-chip-group
+                  show-arrows
+                  center-active
+                  mandatory
+                  active-class="blue darken-3 white--text large">
+                  <v-chip 
+                    v-for="city in cities"
+                    :key="city.name"
+                    @change="selectedCity(city)">
+                    {{city.name}}
+                  </v-chip>
+                </v-chip-group>
+              </v-col>
+            </v-row>
+          </v-col>
         </v-row>
         <v-row class="d-flex justify-center mt-16">
           <span class="text-h2">
@@ -148,9 +156,12 @@
     },
   
     methods:{
-
-      // TODO : add local storage
-
+      getCities(){
+        this.cities  = []
+        const items = {...localStorage}
+        Object.values(items).forEach(
+            city => this.cities.push(JSON.parse(city)));
+      },
 
       /**
        * This method resets the values of the `dialogSearch` and `dialogManage` flags to false.
@@ -202,6 +213,17 @@
         finally{
           this.validationDialog();
         }
+      },
+
+
+      deleteCites({cities}){
+        console.log(cities);
+        cities.forEach(city => {
+          localStorage.removeItem(`${city.name}`)
+          this.cities.splice(this.cities.indexOf(city))
+        })
+        this.getCities();
+        this.validationDialog();
       },
 
 
