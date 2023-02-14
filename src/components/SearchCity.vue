@@ -2,7 +2,7 @@
     <v-card>
         <v-toolbar color="blue lighten-2">
             <v-toolbar-title>
-                <v-icon icon="mdi-magnify"/>
+                <v-icon>mdi-magnify</v-icon>
                 Search city
             </v-toolbar-title>
         </v-toolbar>
